@@ -1,10 +1,12 @@
 name: Update Language Scores
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: "0 8 * * 1" # Every Monday at 08:00 UTC
   workflow_dispatch:
-
 jobs:
   update-scores:
     runs-on: ubuntu-latest
