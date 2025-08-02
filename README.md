@@ -1,4 +1,5 @@
-## Welcome to my profile!
+# My GitHub Profile
+
 Here are my language grades:
 
 <!--START_LANG_SCORES-->
