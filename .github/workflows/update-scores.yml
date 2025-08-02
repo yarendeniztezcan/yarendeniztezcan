@@ -1,37 +1,45 @@
 name: Update Language Scores
 
-permissions:
-  contents: write
-
 on:
-  schedule:
-    - cron: "0 8 * * 1" # Every Monday at 08:00 UTC
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger
+
 jobs:
-  update-scores:
+  update-readme:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          python-version: '3.x'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install requests
-        run: pip install requests
-
-      - name: Run score updater
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ github.repository_owner }}
-        run: python update_lang_scores.py
-
-      - name: Commit and push if changed
+      - name: Set up Git identity
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update README.md
+        run: |
+          # 🔧 Replace this with your actual update script
+          sed -i '/<!--START_LANG_SCORES-->/,<!--END_LANG_SCORES-->/c\
+          <!--START_LANG_SCORES-->\n\
+          | Language | Grade |\n\
+          |----------|-------|\n\
+          | PHP      | A     |\n\
+          | C        | A     |\n\
+          | Java     | A     |\n\
+          | HTML     | A     |\n\
+          | CMake    | A     |\n\
+          | Python   | A     |\n\
+          <!--END_LANG_SCORES-->' README.md
+
+      - name: Commit changes
+        run: |
           git add README.md
-          git diff --cached --exit-code || git commit -m "Update language scores"
-          git push
+          git commit -m "Update language scores" || echo "No changes to commit"
+
+      - name: Push changes
+        run: git push
